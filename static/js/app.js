@@ -13,8 +13,7 @@ const domElements = {
     charts: {
         map: document.getElementById('mapChart'),
         trend: document.getElementById('trendChart'),
-        stacked: document.getElementById('stackedChart'),
-        scatter: document.getElementById('scatterChart'),
+              scatter: document.getElementById('scatterChart'),
         stats: document.getElementById('statsChart'),
         decade: document.getElementById('decadeChart'),
         yearly: document.getElementById('yearlyChart')
@@ -93,7 +92,7 @@ function handleFilterChange() {
 function updateAllCharts() {
     if (currentFilters.year) {
         updateMapChart();
-        updateStackedChart(currentFilters.year);
+
         updateDecadeChart();
         updateYearlyChart();
     }
@@ -346,41 +345,6 @@ async function updateMapChart() {
     }
 }
 
-
-// Function to update the stacked chart
-async function updateStackedChart(year) {
-    try {
-            const response = await fetch(`${BASE_URL}/api/stacked/${year}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // Parse the JSON data
-        const data = await response.json();
-
-        // Prepare data for Plotly
-        const products = ['Maize_Production', 'Rice_Production', 'Wheat_Production'];
-        const traces = products.map(product => ({
-            x: data.map(d => d.Entity),
-            y: data.map(d => d[product]),
-            name: formatProductName(product),
-            type: 'bar'
-        }));
-
-        // Define layout for the stacked chart
-        const layout = {
-            title: `Production Distribution (${year})`,
-            barmode: 'stack', // Set to 'stack' for stacked bars
-            xaxis: { title: 'Country', showticklabels: false },
-            yaxis: { title: 'Tonnes' }
-        };
-
-        // Render the stacked chart using Plotly
-        Plotly.newPlot('stackedChart', traces, layout);
-    } catch (error) {
-        console.error("Stacked chart error:", error);
-    }
-}
 
 function formatProductName(product) {
     return product.replace(/_/g, ' ').replace(/Production/i, 'Production').trim();
