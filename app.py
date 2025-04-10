@@ -5,6 +5,7 @@ from flask import Flask, jsonify, request
 from flask.cli import load_dotenv
 from flask_cors import CORS
 from sqlalchemy import create_engine, text, inspect
+from flask import render_template
 
 load_dotenv()
 app = Flask(__name__)
@@ -23,11 +24,13 @@ DB_CONFIG = {
 DATABASE_URI = f"mysql+pymysql://{DB_CONFIG['user']}:{DB_CONFIG['password']}@{DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['database']}"
 engine = create_engine(DATABASE_URI)
 
+from flask import render_template
+
 
 @app.route('/', methods=['GET'])
 def serve_index():
-    # Serve the index.html from the static folder
-    return app.send_static_file('index.html')
+    # Render the index.html from the templates folder
+    return render_template('index.html')
 
 
 def safe_query(query, params=None):
