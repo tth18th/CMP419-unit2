@@ -49,9 +49,9 @@ async function fetchData(url) {
 async function populateDropdowns() {
     try {
         const [countries, years, products] = await Promise.all([
-            fetchData('${BASE_URL}/api/countries'),
-            fetchData('${BASE_URL}/api/years'),
-            fetchData('${BASE_URL}/api/products')
+            fetchData(`${BASE_URL}/api/countries`),
+            fetchData(`${BASE_URL}/api/years`),
+            fetchData(`${BASE_URL}/api/products`)
         ]);
 
         populateSelect(domElements.entitySelect, countries, 'Select Country');
@@ -669,7 +669,7 @@ function updateStatsChart() {
 
 async function loadBubbleChart() {
     try {
-        const data = await fetchData('${BASE_URL}/api/data/bubble');
+        const data = await fetchData(`${BASE_URL}/api/data/bubble`);
 
         // Create size values for the bubbles
         const maxProduction = Math.max(...data.map(d => d.total_production));
