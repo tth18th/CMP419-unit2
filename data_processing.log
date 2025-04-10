@@ -1,0 +1,36 @@
+2025-04-10 15:31:42,781 - INFO - Output directory: processed_data
+2025-04-10 15:31:42,781 - INFO - Loading data from world food production.csv
+2025-04-10 15:31:42,819 - INFO - Successfully loaded data with shape: (11912, 24)
+2025-04-10 15:31:42,820 - INFO - Modified columns: ['Entity', 'Year', 'Maize_Production', 'Rice_Production', 'Yams_Production', 'Wheat_Production', 'Tomatoes_Production', 'Tea_Production', 'Sweet_potatoes_Production', 'Sunflower_seed_Production', 'Sugar_cane_Production', 'Soybeans_Production', 'Rye_Production', 'Potatoes_Production', 'Oranges_Production', 'Peas,_dry_Production', 'Palm_oil_Production', 'Grapes_Production', 'Coffee,_green_Production', 'Cocoa_beans_Production', 'Meat,_chicken_Production', 'Bananas_Production', 'Avocados_Production', 'Apples_Production']
+2025-04-10 15:31:42,820 - INFO - Original columns were: ['Entity', 'Year', 'Maize Production (tonnes)', 'Rice  Production ( tonnes)', 'Yams  Production (tonnes)', 'Wheat Production (tonnes)', 'Tomatoes Production (tonnes)', 'Tea  Production ( tonnes )', 'Sweet potatoes  Production (tonnes)', 'Sunflower seed  Production (tonnes)', 'Sugar cane Production (tonnes)', 'Soybeans  Production (tonnes)', 'Rye  Production (tonnes)', 'Potatoes  Production (tonnes)', 'Oranges  Production (tonnes)', 'Peas, dry Production ( tonnes)', 'Palm oil  Production (tonnes)', 'Grapes  Production (tonnes)', 'Coffee, green Production ( tonnes)', 'Cocoa beans Production (tonnes)', 'Meat, chicken  Production (tonnes)', 'Bananas  Production ( tonnes)', 'Avocados Production (tonnes)', 'Apples Production (tonnes)']
+2025-04-10 15:31:42,847 - INFO - Removed 0 exact duplicates
+2025-04-10 15:31:42,849 - INFO - Capped outliers in Maize_Production
+2025-04-10 15:31:42,850 - INFO - Capped outliers in Rice_Production
+2025-04-10 15:31:42,852 - INFO - Capped outliers in Yams_Production
+2025-04-10 15:31:42,854 - INFO - Capped outliers in Wheat_Production
+2025-04-10 15:31:42,855 - INFO - Capped outliers in Tomatoes_Production
+2025-04-10 15:31:42,857 - INFO - Capped outliers in Tea_Production
+2025-04-10 15:31:42,858 - INFO - Capped outliers in Sweet_potatoes_Production
+2025-04-10 15:31:42,859 - INFO - Capped outliers in Sunflower_seed_Production
+2025-04-10 15:31:42,861 - INFO - Capped outliers in Sugar_cane_Production
+2025-04-10 15:31:42,863 - INFO - Capped outliers in Soybeans_Production
+2025-04-10 15:31:42,864 - INFO - Capped outliers in Rye_Production
+2025-04-10 15:31:42,865 - INFO - Capped outliers in Potatoes_Production
+2025-04-10 15:31:42,867 - INFO - Capped outliers in Oranges_Production
+2025-04-10 15:31:42,868 - INFO - Capped outliers in Peas,_dry_Production
+2025-04-10 15:31:42,870 - INFO - Capped outliers in Palm_oil_Production
+2025-04-10 15:31:42,871 - INFO - Capped outliers in Grapes_Production
+2025-04-10 15:31:42,873 - INFO - Capped outliers in Coffee,_green_Production
+2025-04-10 15:31:42,875 - INFO - Capped outliers in Cocoa_beans_Production
+2025-04-10 15:31:42,876 - INFO - Capped outliers in Meat,_chicken_Production
+2025-04-10 15:31:42,878 - INFO - Capped outliers in Bananas_Production
+2025-04-10 15:31:42,879 - INFO - Capped outliers in Avocados_Production
+2025-04-10 15:31:42,881 - INFO - Capped outliers in Apples_Production
+2025-04-10 15:31:42,886 - INFO - Rounded all production values to 2 decimal places
+2025-04-10 15:31:43,086 - INFO - Saved processed data to processed_data\processed_20250410_1531.csv
+2025-04-10 15:31:43,119 - INFO - Saved basic statistics to processed_data\food_production_statistics.csv
+2025-04-10 15:31:43,127 - INFO - Saved yearly aggregation to processed_data\yearly_production.csv
+2025-04-10 15:31:43,135 - INFO - Saved decade aggregation to processed_data\decade_production.csv
+2025-04-10 15:31:43,159 - INFO - Saved top producers to processed_data\top_producers.json
+2025-04-10 15:31:43,161 - INFO - Saved preservation report to processed_data\preservation_report_20250410_1531.json
+2025-04-10 15:31:43,161 - INFO - Processing completed

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Global Food Production Visualizer</title>
+  <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
+  <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+</head>
+
+<body>
+  <div class="container">
+    <header class="dashboard-header">
+      <h1>🌍 Global Food Production Analysis</h1>
+      <p class="subtitle">Explore worldwide agricultural trends from 1961 to present</p>
+    </header>
+
+    <!-- Filters -->
+    <div class="filters-container">
+      <div class="filter-group">
+        <label for="entitySelect">📍 Country</label>
+        <div class="select-wrapper">
+          <select id="entitySelect" class="modern-select">
+            <option value="">Select Country</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label for="yearSelect">📅 Year</label>
+        <div class="select-wrapper">
+          <select id="yearSelect" class="modern-select">
+            <option value="">Select Year</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label for="productSelect">🌾 Product</label>
+        <div class="select-wrapper">
+          <select id="productSelect" class="modern-select">
+            <option value="">Select Product</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visualization -->
+    <div class="visualization-grid">
+         <div class="map-container">
+           <div class="chart-card">
+             <div class="chart-header">
+               <h3>🌐 Geographic Distribution</h3>
+               <p class="chart-description">
+                 Explore global agricultural output through color-coded country data.
+                 <span class="highlight">Hover</span> to see exact production figures and
+                 <span class="highlight">click</span> to identify regional patterns.
+               </p>
+             </div>
+             <div id="mapChart" class="chart"></div>
+           </div>
+
+           <div class="chart-card">
+             <div class="chart-header">
+               <h3>📊 Production Intensity</h3>
+               <p class="chart-description">
+                 Compare national output levels through bubble sizing.
+                 <span class="highlight">Larger bubbles</span> indicate higher production volumes
+                 for selected commodities.
+               </p>
+             </div>
+             <div id="symbolMap" class="chart"></div>
+           </div>
+         </div>
+
+         <div class="chart-card">
+           <div class="chart-header">
+             <h3>📈 Historical Trends</h3>
+             <p class="chart-description">
+               Track agricultural development over time.
+               <span class="highlight">Select multiple years</span> to compare production
+               evolution across decades.
+             </p>
+           </div>
+           <div id="trendChart" class="chart"></div>
+         </div>
+
+         <div class="chart-card">
+           <div class="chart-header">
+             <h3>📦 Annual Comparison</h3>
+             <p class="chart-description">
+               Analyze year-to-year variations in crop output.
+               <span class="highlight">Bars</span> represent total production while
+               <span class="highlight">colors</span> differentiate commodity types.
+             </p>
+           </div>
+           <div id="barChart" class="chart"></div>
+         </div>
+
+         <div class="chart-card">
+           <div class="chart-header">
+             <h3>🔗 Crop Relationships</h3>
+             <p class="chart-description">
+               Discover correlations between different agricultural products.
+               <span class="highlight">Proximity</span> indicates production pattern similarity.
+             </p>
+           </div>
+           <div id="scatterChart" class="chart"></div>
+         </div>
+
+         <div class="chart-card">
+           <div class="chart-header">
+             <h3>🌾 Production Clusters</h3>
+             <p class="chart-description">
+               Visualize production volumes through bubble sizing.
+               <span class="highlight">Hover interaction</span> reveals detailed crop statistics
+               for each country.
+             </p>
+           </div>
+           <div id="bubbleChart" class="chart"></div>
+         </div>
+
+         <div class="chart-card">
+           <div class="chart-header">
+             <h3>🏆 Global Leaders</h3>
+             <p class="chart-description">
+               Identify top-producing nations. Rankings update dynamically based on
+               <span class="highlight">selected year</span> and
+               <span class="highlight">commodity filters</span>.
+             </p>
+           </div>
+           <div id="topProducersChart" class="chart"></div>
+         </div>
+       </div>
+
+       <!-- Insights Section -->
+       <div class="summary-section">
+         <h2 class="summary-title">Key Insights</h2>
+         <p class="section-intro">
+           Data-driven revelations about global agriculture. Updated in real-time with your selections.
+         </p>
+
+         <div class="summary-grid">
+           <div class="summary-card">
+             <div class="summary-header">
+               <h3>📅 Decadal Patterns</h3>
+               <p class="chart-description">
+                 10-year production averages revealing long-term agricultural trends and climate impacts.
+               </p>
+             </div>
+             <div id="decadeChart" class="chart"></div>
+           </div>
+
+           <div class="summary-card">
+             <div class="summary-header">
+               <h3>📈 Annual Fluctuations</h3>
+               <p class="chart-description">
+                 Yearly production changes highlighting market variations and seasonal impacts.
+               </p>
+             </div>
+             <div id="yearlyChart" class="chart"></div>
+           </div>
+
+           <div class="summary-card">
+             <div class="summary-header">
+               <h3>📊 Statistical Overview</h3>
+               <p class="chart-description">
+                 Key metrics including production averages, variability, and distribution patterns.
+               </p>
+             </div>
+             <div id="statsChart" class="chart"></div>
+           </div>
+         </div>
+       </div>
+     </div>
+
+  <script src="../static/js/app.js" defer></script>
+</body>
+</html>
