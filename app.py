@@ -24,8 +24,6 @@ DB_CONFIG = {
 DATABASE_URI = f"mysql+pymysql://{DB_CONFIG['user']}:{DB_CONFIG['password']}@{DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['database']}"
 engine = create_engine(DATABASE_URI)
 
-from flask import render_template
-
 
 @app.route('/', methods=['GET'])
 def serve_index():
@@ -116,13 +114,13 @@ def get_yearly_data():
 
 
 def get_valid_product_columns():
+    """Get all valid production columns from processed_data table"""
     with engine.connect() as conn:
-        df = pd.read_sql_table('processed_data', conn)
-    return [col for col in df.columns if col not in ['entity', 'year']]
-
+        inspector = inspect(conn)
+        columns = inspector.get_columns('processed_data')
+    return [col['name'] for col in columns if col['name'] not in ['Entity', 'Year']]
 
 VALID_PRODUCTS = get_valid_product_columns()
-
 
 @app.route('/api/scatter/<product1>/<product2>', methods=['GET'])
 def get_scatter_data(product1, product2):
@@ -426,6 +424,96 @@ def get_country_trends(country):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
+@app.route('/api/data/compare/<country>/<int:year>/<product>', methods=['GET'])
+def compare_with_top_producers(country, year, product):
+    """Compare production data for specific country, year and product with top producers."""
+    try:
+        # Validate product parameter
+        if product not in VALID_PRODUCTS:
+            app.logger.warning(f"Invalid product requested: {product}")
+            return jsonify({"error": "Invalid product type"}), 400
+
+        # 1. Get selected country's production for the specific product
+        query_selected = text(f"""
+            SELECT Entity, Year, `{product}` as production
+            FROM processed_data
+            WHERE Entity = :country AND Year = :year
+        """)
+
+        selected_df = pd.read_sql(query_selected, engine,
+                                  params={'country': country, 'year': year})
+
+        if selected_df.empty:
+            app.logger.warning(f"No data found for {country} ({year})")
+            return jsonify({"error": "No data found for selected country/year"}), 404
+
+        selected_production = selected_df.iloc[0]['production']
+        if pd.isna(selected_production):
+            return jsonify({"error": "No production data for this product"}), 404
+
+        crop_type = product
+
+        query_top = text("""
+            SELECT region, production
+            FROM top_producers
+            WHERE crop_type = :crop_type
+            ORDER BY production DESC
+            LIMIT 5
+        """)
+
+        top_df = pd.read_sql(query_top, engine, params={'crop_type': crop_type})
+
+        if top_df.empty:
+            app.logger.warning(f"No top producers found for {crop_type}")
+            return jsonify({"error": "No top producers data available"}), 404
+
+        max_production = max(top_df['production'].max(), selected_production)
+
+        top_df['normalized'] = (top_df['production'] / max_production) * 100
+        selected_normalized = (selected_production / max_production) * 100
+
+        categories = top_df['region'].tolist()
+        categories.append(country)
+        top_values = top_df['normalized'].tolist()
+        top_values.append(0)
+        selected_values = [0] * len(top_df)
+        selected_values.append(selected_normalized)
+
+        response = {
+            "product": product,
+            "year": year,
+            "labels": categories,
+            "datasets": [
+                {
+                    "label": "Top Global Producers",
+                    "data": top_values,
+                    "borderColor": "rgb(75, 192, 192)",
+                    "backgroundColor": "rgba(75, 192, 192, 0.2)",
+                    "pointBackgroundColor": "rgb(75, 192, 192)",
+                },
+                {
+                    "label": f"Selected: {country}",
+                    "data": selected_values,
+                    "borderColor": "rgb(255, 99, 132)",
+                    "backgroundColor": "rgba(255, 99, 132, 0.2)",
+                    "pointBackgroundColor": "rgb(255, 99, 132)",
+                }
+            ],
+            "actual_values": {
+                "selected_country": {
+                    "region": country,
+                    "production": selected_production
+                },
+                "top_producers": top_df[['region', 'production']].to_dict('records'),
+                "max_production": max_production
+            }
+        }
+        return jsonify(response), 200
+
+    except Exception as e:
+        app.logger.error(f"Comparison error for {country}/{year}/{product}: {str(e)}", exc_info=True)
+        return jsonify({"error": "Internal server error"}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

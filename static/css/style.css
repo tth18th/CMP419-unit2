@@ -229,6 +229,75 @@
   .highlight:hover {
     background-color: rgba(42, 107, 72, 0.2);
   }
+  .chart-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px 0;
+  }
+
+  .chart-header {
+    margin-bottom: 15px;
+  }
+
+  .chart-header h3 {
+    margin: 0;
+    color: #2c3e50;
+  }
+
+  .chart-description {
+    margin: 5px 0 0;
+    color: #7f8c8d;
+    font-size: 0.9em;
+  }
+
+  .chart-container {
+    aspect-ratio: 1/1;
+    position: relative;
+    height: 700px;
+    width: 100%;
+    margin: 20px 0;
+  }
+
+  #values-container {
+    margin-top: 20px;
+  }
+
+  .values-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .values-table table {
+    width: 100%;
+    border: 1px solid #ddd;
+  }
+
+  .values-table th {
+    background-color: #f2f2f2;
+    padding: 8px;
+    text-align: left;
+  }
+
+  .values-table td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .values-table .highlight {
+    background-color: #fff8e1;
+    font-weight: bold;
+  }
+
+  .error {
+    color: #e74c3c;
+    padding: 10px;
+    background-color: #ffebee;
+    border-radius: 4px;
+  }
+
+
 
   @media (max-width: 768px) {
     .dashboard-header {
@@ -254,6 +323,8 @@
     }
   }
 
+
+
   @media (max-width: 480px) {
     .filters-container {
       padding: 1.5rem;
@@ -261,5 +332,167 @@
 
     .chart {
       height: 420px;
+    }
+  }
+  /* Fixes for big screens */
+  @media (min-width: 1600px) {
+    .container {
+      max-width: 90%;
+    }
+
+    .visualization-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chart-card {
+      padding: 2.5rem;
+    }
+
+    .chart {
+      min-height: 600px;
+    }
+
+    .chart-container {
+      height: 650px;
+    }
+
+    .summary-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .map-container {
+      grid-template-columns: 1fr 1.2fr;
+    }
+
+    /* Adjust font sizes for better readability */
+    .dashboard-header h1 {
+      font-size: 2.5rem;
+    }
+
+    .dashboard-header p {
+      font-size: 1.2rem;
+    }
+
+    .chart-header h3 {
+      font-size: 1.4rem;
+    }
+
+    .chart-description {
+      font-size: 1rem;
+    }
+
+    /* Better spacing for large screens */
+    .filters-container {
+      padding: 2.5rem;
+      gap: 2rem;
+    }
+
+    .modern-select {
+      padding: 1.2rem;
+      font-size: 1.1rem;
+    }
+
+    /* Adjust radar chart size */
+    #radarChart {
+      width: 100%;
+      height: 100%;
+      height: 700px ;
+      min-height: 600px;
+    }
+
+    /* Values table adjustments */
+    .values-table th,
+    .values-table td {
+      padding: 12px;
+      font-size: 1.05rem;
+    }
+  }
+
+  /* Ultra-wide screens (2560px and above) */
+  @media (min-width: 2560px) {
+    .container {
+      max-width: 85%;
+    }
+
+    .visualization-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+    }
+
+    .chart {
+      min-height: 700px;
+    }
+
+    .chart-container {
+      height: 750px;
+    }
+
+    /* Larger typography */
+    body {
+      font-size: 1.1rem;
+    }
+
+    .dashboard-header h1 {
+      font-size: 3rem;
+    }
+
+    .dashboard-header p {
+      font-size: 1.4rem;
+    }
+
+    /* More padding for cards */
+    .chart-card {
+      padding: 4rem;
+    }
+
+    /* Larger form elements */
+    .modern-select {
+      padding: 1.5rem;
+      font-size: 1.2rem;
+    }
+  }
+
+  /* 4K screens (3840px and above) */
+  @media (min-width: 3840px) {
+    .container {
+      max-width: 80%;
+    }
+
+    /* Even larger typography */
+    body {
+      font-size: 1.3rem;
+      line-height: 1.8;
+    }
+
+    .dashboard-header h1 {
+      font-size: 3.5rem;
+    }
+
+    .dashboard-header p {
+      font-size: 1.6rem;
+    }
+
+    .chart-header h3 {
+      font-size: 1.8rem;
+    }
+
+    /* More spacing */
+    .chart-card {
+      padding: 3.5rem;
+      margin: 3rem 0;
+    }
+
+    .chart {
+      min-height: 800px;
+    }
+
+    .chart-container {
+      height: 850px;
+    }
+
+    /* Larger form elements */
+    .modern-select {
+      padding: 1.8rem;
+      font-size: 1.4rem;
     }
   }
