@@ -4,11 +4,12 @@ import json
 from sqlalchemy import create_engine, text
 
 # MySQL configuration
-DB_USER = "dmjmdund_Bitul"
-DB_PASSWORD = "Dh@@ka!971"
-DB_HOST = "192.168.0.100"
+DB_USER = "freedb_cmp419"
+DB_PASSWORD = "$xt6#V?X7jcXAqv"
+DB_HOST = "sql.freedb.tech"
 DB_PORT = "3306"
-DB_NAME = "dmjmdund_Bitul"
+DB_NAME = "freedb_food_production_db"
+
 
 # Paths to CSV files (adjust if necessary)
 CSV_FILES = {
