@@ -13,10 +13,10 @@ CORS(app)
 
 # Database configuration
 DB_CONFIG = {
-    'host': os.getenv('DB_HOST', 'sql8.freesqldatabase.com'),
-    'database': os.getenv('DB_NAME', 'sql8772301'),
-    'user': os.getenv('DB_USER', 'sql8772301'),
-    'password': os.getenv('DB_PASSWORD', 'x8cHUiD8rm'),
+    'host': os.getenv('DB_HOST', '192.168.0.100'),
+    'database': os.getenv('DB_NAME', 'dmjmdund_Bitul'),
+    'user': os.getenv('DB_USER', 'dmjmdund_Bitul'),
+    'password': os.getenv('DB_PASSWORD', 'Dh@@ka!971'),
     'port': os.getenv('DB_PORT', '3306')
 }
 
