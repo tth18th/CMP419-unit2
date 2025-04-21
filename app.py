@@ -13,15 +13,16 @@ CORS(app)
 
 # Database configuration
 DB_CONFIG = {
-    'host': os.getenv('DB_HOST', '192.168.0.100'),
-    'database': os.getenv('DB_NAME', 'dmjmdund_Bitul'),
-    'user': os.getenv('DB_USER', 'dmjmdund_Bitul'),
-    'password': os.getenv('DB_PASSWORD', 'MZVWDg847ZUfp5PfbX3e'),
+    'host': os.getenv('DB_HOST', 'sql.freedb.tech'),
+    'database': os.getenv('DB_NAME', 'freedb_food_production_db'),
+    'user': os.getenv('DB_USER', 'freedb_cmp419'),
     'port': os.getenv('DB_PORT', '3306')
 }
+password = os.getenv('DB_PASSWORD', '$xt6#V?X7jcXAqv')
+encoded_password = quote_plus(password)
 
 # Create SQLAlchemy engine
-DATABASE_URI = f"mysql+pymysql://{DB_CONFIG['user']}:{DB_CONFIG['password']}@{DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['database']}"
+DATABASE_URI = f"mysql+pymysql://{DB_CONFIG['user']}:{encoded_password}@{DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['database']}"
 engine = create_engine(DATABASE_URI)
 
 
