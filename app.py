@@ -6,6 +6,7 @@ from flask.cli import load_dotenv
 from flask_cors import CORS
 from sqlalchemy import create_engine, text, inspect
 from flask import render_template
+from urllib.parse import quote_plus
 
 load_dotenv()
 app = Flask(__name__)
