@@ -16,7 +16,7 @@ DB_CONFIG = {
     'host': os.getenv('DB_HOST', '192.168.0.100'),
     'database': os.getenv('DB_NAME', 'dmjmdund_Bitul'),
     'user': os.getenv('DB_USER', 'dmjmdund_Bitul'),
-    'password': os.getenv('DB_PASSWORD', 'Dh@@ka!971'),
+    'password': os.getenv('DB_PASSWORD', 'MZVWDg847ZUfp5PfbX3e'),
     'port': os.getenv('DB_PORT', '3306')
 }
 
