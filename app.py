@@ -155,7 +155,7 @@ def get_decade_data_for_product():
 
         query = text(f"""
             SELECT decade, AVG("{product}") AS production
-            FROM decade_production
+            FROM "decade_production"
             GROUP BY decade
             ORDER BY decade
         """)
@@ -363,7 +363,7 @@ def get_country_trends(country):
         query = text("""
             SELECT *
             FROM processed_data
-            WHERE Entity = :Entity
+            WHERE "Entity" = :Entity
             ORDER BY Year ASC
         """)
         with engine.connect() as conn:
@@ -379,6 +379,7 @@ def get_country_trends(country):
 @app.route('/api/data/compare/<country>/<int:year>/<product>', methods=['GET'])
 def compare_with_top_producers(country, year, product):
     try:
+
         if product not in VALID_PRODUCTS:
             app.logger.warning(f"Invalid product requested: {product}")
             return jsonify({"error": "Invalid product type"}), 400
