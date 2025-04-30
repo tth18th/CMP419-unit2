@@ -1,21 +1,21 @@
 {
     "Maize_Production": {
-        "Americas (FAO)": 359343980.0,
-        "Asia (FAO)": 359343980.0,
-        "Asia": 359343980.0,
-        "High-income countries": 359343980.0,
-        "Upper-middle-income countries": 359343980.0,
-        "Northern America (FAO)": 359343980.0,
-        "North America": 359343980.0,
-        "World": 359343980.0,
-        "United States": 359343980.0,
+        "World": 1210235100.0,
+        "Americas (FAO)": 592356350.0,
+        "Upper-middle-income countries": 536570460.0,
+        "High-income countries": 455326880.0,
+        "North America": 430073800.0,
+        "Northern America (FAO)": 397926850.0,
+        "United States": 383943000.0,
+        "Asia": 378856400.0,
+        "Asia (FAO)": 378856400.0,
         "Eastern Asia (FAO)": 275140300.0
     },
     "Rice_Production": {
-        "Asia": 446700628.0,
-        "Armenia": 446700628.0,
-        "Argentina": 446700628.0,
-        "South Africa": 446700628.0,
+        "Asia": 690560200.0,
+        "Armenia": 690560200.0,
+        "South Africa": 571049540.0,
+        "Argentina": 477693380.0,
         "Indonesia": 318661730.0,
         "Western Africa (FAO)": 316813248.0,
         "Sao Tome and Principe": 235003420.0,
@@ -24,10 +24,10 @@
         "Northern America (FAO)": 188624500.0
     },
     "Yams_Production": {
-        "Afghanistan": 48904039.0,
-        "Africa": 48904039.0,
-        "Democratic Republic of Congo": 48904039.0,
-        "Vietnam": 48904039.0,
+        "Afghanistan": 73493224.0,
+        "Africa": 73493224.0,
+        "Vietnam": 71048693.0,
+        "Democratic Republic of Congo": 52831364.0,
         "Italy": 35550330.0,
         "Israel": 32744786.0,
         "Sweden": 31480577.0,
@@ -36,11 +36,11 @@
         "New Zealand": 24874800.0
     },
     "Wheat_Production": {
-        "Asia": 293909156.0,
-        "Armenia": 293909156.0,
-        "Turkmenistan": 293909156.0,
-        "Western Africa (FAO)": 293909156.0,
-        "Rwanda": 293909156.0,
+        "Rwanda": 440187900.0,
+        "Turkmenistan": 429947745.0,
+        "Western Africa (FAO)": 335914410.0,
+        "Asia": 328617730.0,
+        "Armenia": 328610800.0,
         "South Africa": 230786548.0,
         "Costa Rica": 195069710.0,
         "Cote d'Ivoire": 195046800.0,
@@ -48,10 +48,10 @@
         "Small Island Developing States (FAO)": 146429108.0
     },
     "Tomatoes_Production": {
-        "Asia": 54813115.0,
-        "Armenia": 54813115.0,
-        "Western Africa (FAO)": 54813115.0,
-        "United States": 54813115.0,
+        "Western Africa (FAO)": 181317420.0,
+        "Asia": 107036660.0,
+        "Armenia": 107023300.0,
+        "United States": 93928720.0,
         "Lithuania": 44413732.0,
         "Algeria": 23681040.0,
         "Estonia": 22906292.0,
@@ -60,7 +60,7 @@
         "El Salvador": 20950258.0
     },
     "Tea_Production": {
-        "New Zealand": 1135012.0,
+        "New Zealand": 1510307.0,
         "Western Europe (FAO)": 1086750.0,
         "Malaysia": 993490.0,
         "Turkey": 909143.0,
@@ -72,8 +72,8 @@
         "Russia": 679009.0
     },
     "Sweet_potatoes_Production": {
-        "Colombia": 118495600.0,
-        "Rwanda": 118495600.0,
+        "Rwanda": 139706820.0,
+        "Colombia": 125582180.0,
         "Cambodia": 102615416.0,
         "Burundi": 102407500.0,
         "Philippines": 82632950.0,
@@ -84,9 +84,9 @@
         "Africa": 29972002.0
     },
     "Sunflower_seed_Production": {
-        "Cape Verde": 17102418.0,
-        "Canada": 17102418.0,
-        "Latvia": 17102418.0,
+        "Cape Verde": 34671612.0,
+        "Canada": 34671612.0,
+        "Latvia": 18860156.0,
         "Laos": 14337102.0,
         "Jordan": 10877089.0,
         "Maldives": 9182334.0,
@@ -96,11 +96,11 @@
         "Turkey": 7893393.0
     },
     "Sugar_cane_Production": {
-        "Albania": 768538785.0,
-        "Oceania": 768538785.0,
-        "Mozambique": 768538785.0,
-        "Paraguay": 768538785.0,
-        "Morocco": 768538785.0,
+        "Oceania": 1146229800.0,
+        "Albania": 961894340.0,
+        "Paraguay": 907067840.0,
+        "Morocco": 838060000.0,
+        "Mozambique": 838060000.0,
         "Barbados": 758646200.0,
         "Nepal": 424262850.0,
         "Sao Tome and Principe": 358264532.0,
@@ -108,9 +108,9 @@
         "Angola": 230879400.0
     },
     "Soybeans_Production": {
-        "Mexico": 145711528.0,
-        "Kyrgyzstan": 145711528.0,
-        "Land Locked Developing Countries (FAO)": 145711528.0,
+        "Mexico": 190429310.0,
+        "Land Locked Developing Countries (FAO)": 186189330.0,
+        "Kyrgyzstan": 186189330.0,
         "Syria": 136036540.0,
         "Guinea": 127344504.0,
         "Melanesia": 120514490.0,
@@ -120,8 +120,8 @@
         "Haiti": 77345730.0
     },
     "Rye_Production": {
-        "High-income countries": 23211294.0,
-        "Indonesia": 23211294.0,
+        "Indonesia": 38193584.0,
+        "High-income countries": 23900482.0,
         "Guinea-Bissau": 22178608.0,
         "Northern America (FAO)": 19272877.0,
         "North America": 15925297.0,
@@ -132,9 +132,9 @@
         "Senegal": 13524458.0
     },
     "Potatoes_Production": {
-        "Ukraine": 188801184.0,
-        "Uganda": 188801184.0,
-        "Western Africa (FAO)": 188801184.0,
+        "Ukraine": 330779000.0,
+        "Uganda": 297921600.0,
+        "Western Africa (FAO)": 188921238.0,
         "Asia": 174594540.0,
         "Armenia": 174471740.0,
         "Tajikistan": 140721600.0,
@@ -144,8 +144,8 @@
         "Egypt": 104900960.0
     },
     "Oranges_Production": {
+        "Sao Tome and Principe": 76216360.0,
         "World": 30653814.0,
-        "Sao Tome and Principe": 30653814.0,
         "Americas (FAO)": 29104086.0,
         "Argentina": 25836080.0,
         "Antigua and Barbuda": 25809630.0,
@@ -156,7 +156,7 @@
         "New Caledonia": 16241979.0
     },
     "Peas,_dry_Production": {
-        "Namibia": 7643161.0,
+        "Namibia": 8463586.0,
         "Caribbean (FAO)": 6274570.0,
         "Democratic Republic of Congo": 6134553.0,
         "Micronesia (FAO)": 5848448.0,
@@ -168,11 +168,11 @@
         "Micronesia (country)": 3435357.0
     },
     "Palm_oil_Production": {
-        "Algeria": 34818154.0,
-        "Americas (FAO)": 34818154.0,
-        "China (FAO)": 34818154.0,
-        "Upper-middle-income countries": 34818154.0,
-        "World": 34818154.0,
+        "Americas (FAO)": 60765824.0,
+        "World": 52302215.0,
+        "China (FAO)": 51255400.0,
+        "Algeria": 51108496.0,
+        "Upper-middle-income countries": 45548564.0,
         "Low-income countries": 28739504.0,
         "Gambia": 26136148.0,
         "Europe": 18475602.0,
@@ -180,8 +180,8 @@
         "Northern Africa (FAO)": 12904545.0
     },
     "Grapes_Production": {
-        "Central Asia (FAO)": 39562398.0,
-        "Middle Africa (FAO)": 39562398.0,
+        "Middle Africa (FAO)": 55291004.0,
+        "Central Asia (FAO)": 40286816.0,
         "Costa Rica": 35956036.0,
         "Chile": 33648340.0,
         "Chad": 33619340.0,
@@ -192,9 +192,9 @@
         "Malta": 20001882.0
     },
     "Coffee,_green_Production": {
-        "Africa (FAO)": 4303236.0,
-        "Micronesia (FAO)": 4303236.0,
-        "Mexico": 4303236.0,
+        "Micronesia (FAO)": 8816494.0,
+        "Mexico": 6083218.0,
+        "Africa (FAO)": 5163153.0,
         "Kenya": 3974032.0,
         "Kuwait": 3655180.0,
         "Americas (FAO)": 3358628.0,
@@ -204,9 +204,9 @@
         "Vanuatu": 2949879.0
     },
     "Cocoa_beans_Production": {
-        "Afghanistan": 3220701.0,
-        "Africa": 3220701.0,
-        "Italy": 3220701.0,
+        "Italy": 4486252.0,
+        "Africa": 3771118.0,
+        "Afghanistan": 3771118.0,
         "Israel": 2695981.0,
         "Kazakhstan": 1996322.0,
         "Myanmar": 1946161.0,
@@ -216,10 +216,10 @@
         "Netherlands": 1061989.0
     },
     "Meat,_chicken_Production": {
-        "Americas (FAO)": 21191164.0,
-        "Asia (FAO)": 21191164.0,
-        "Asia": 21191164.0,
-        "Russia": 21191164.0,
+        "Americas (FAO)": 50175664.0,
+        "Asia (FAO)": 37479470.0,
+        "Asia": 37455616.0,
+        "Russia": 21388082.0,
         "Vietnam": 18293614.0,
         "Venezuela": 18293614.0,
         "Comoros": 13808618.0,
@@ -228,7 +228,7 @@
         "France": 10075471.0
     },
     "Bananas_Production": {
-        "South America (FAO)": 43134390.0,
+        "South America (FAO)": 112167790.0,
         "Angola": 26414704.0,
         "Africa": 22941956.0,
         "Afghanistan": 22941956.0,
@@ -240,10 +240,10 @@
         "Pakistan": 11479045.0
     },
     "Avocados_Production": {
-        "Africa (FAO)": 2084507.0,
-        "Finland": 2084507.0,
-        "Oman": 2084507.0,
-        "Mexico": 2084507.0,
+        "Africa (FAO)": 6096596.0,
+        "Oman": 3052384.0,
+        "Mexico": 2376648.0,
+        "Finland": 2243397.0,
         "Fiji": 1962826.0,
         "Saint Lucia": 1682868.0,
         "Lesotho": 1664340.0,
@@ -252,8 +252,8 @@
         "Turkmenistan": 1149392.0
     },
     "Apples_Production": {
-        "Armenia": 47970966.0,
-        "Western Africa (FAO)": 47970966.0,
+        "Western Africa (FAO)": 57044952.0,
+        "Armenia": 54385096.0,
         "Sao Tome and Principe": 35746673.0,
         "Montenegro": 33942610.0,
         "Turkey": 31714500.0,

@@ -59,26 +59,28 @@ def clean_and_process_data(input_file="world food production.csv", output_dir="p
         df = df.drop_duplicates()
         logger.info(f"Removed {initial_count - len(df)} exact duplicates")
 
-        # Cap outliers
+        # Handle outliers more carefully - preserve top producers
         for col in numeric_cols:
             if df[col].dtype in [np.float64, np.int64]:
-                floor = df[col].quantile(0.01)
-                ceiling = df[col].quantile(0.99)
-                df[col] = np.where(df[col] < floor, floor, df[col])
-                df[col] = np.where(df[col] > ceiling, ceiling, df[col])
-                logger.info(f"Capped outliers in {col}")
+                # Log transformation to handle extreme values
+                df[col] = np.where(df[col] < 0, 0, df[col])  # Set negative values to 0
 
-        # Round all production-related float columns to 2 decimal places
+                # Only cap at floor (don't cap the top performers)
+                floor = df[col].quantile(0.01)
+                df[col] = np.where(df[col] < floor, floor, df[col])
+
+                # Log the data range after processing
+                logger.info(f"Data range for {col}: min={df[col].min():.0f}, max={df[col].max():.0f}")
+
+        # Round all production-related numbers
         df = df.round({col: 0 for col in numeric_cols})
-        logger.info("Rounded all production values to 2 decimal places")
+        logger.info("Rounded all production values to rounded number")
 
         # Save cleaned data
         timestamp = datetime.now().strftime("%Y%m%d_%H%M")
         output_path = os.path.join(output_dir, f"processed_{timestamp}.csv")
         df.to_csv(output_path, index=False)
         logger.info(f"Saved processed data to {output_path}")
-
-        # === Additional Statistics and Outputs ===
 
         # 1. Basic statistics
         stats_df = df[numeric_cols].describe().round(0)
@@ -102,16 +104,35 @@ def clean_and_process_data(input_file="world food production.csv", output_dir="p
             decade_prod.to_csv(decade_file, index=False)
             logger.info(f"Saved decade aggregation to {decade_file}")
 
-        # 3. Top producers by food type
+        # 3. Top producers by food type - with unique values
         if entity_col in df.columns:
             latest_year = df[year_col].max()
             latest_data = df[df[year_col] == latest_year]
             top_producers = {}
 
             for food in numeric_cols:
-                top = latest_data.sort_values(by=food, ascending=False)[[entity_col, food]].head(10)
-                top[food] = top[food].round(0)
+                # Sort values and reset index to get proper ordering
+                sorted_data = latest_data[[entity_col, food]].sort_values(by=food, ascending=False).reset_index(drop=True)
+
+                # Take top 10, but extend if there are ties
+                top = sorted_data.head(10)
+
+                # If the 10th value is the same as some of the next values, include them
+                if len(sorted_data) > 10:
+                    tenth_value = top.iloc[9][food]
+                    # Find all rows with the same value as the 10th
+                    ties = sorted_data[sorted_data[food] == tenth_value]
+                    if len(ties) > 1:
+                        # Include all ties
+                        max_index = sorted_data[sorted_data[food] == tenth_value].index.max()
+                        top = sorted_data.iloc[:max_index + 1]
+
+                # Convert to dictionary
                 top_producers[food] = top.set_index(entity_col)[food].to_dict()
+
+                # Log the results for debugging
+                logger.info(f"Top {len(top)} producers for {food}: {top[entity_col].tolist()}")
+                logger.info(f"Production values: {top[food].tolist()}")
 
             top_file = os.path.join(output_dir, "top_producers.json")
             with open(top_file, 'w') as f:

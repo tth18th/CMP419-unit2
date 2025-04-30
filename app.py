@@ -1,33 +1,25 @@
-import os
 import traceback
 import pandas as pd
 from flask import Flask, jsonify, request
-from flask.cli import load_dotenv
+from flask import render_template
 from flask_cors import CORS
 from sqlalchemy import create_engine, text, inspect
-from flask import render_template
-from urllib.parse import quote_plus
 
-load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
 # Database configuration
 DB_CONFIG = {
-    'host': os.getenv('DB_HOST', 'sql.freedb.tech'),
-    'database': os.getenv('DB_NAME', 'freedb_food_production_db'),
-    'user': os.getenv('DB_USER', 'freedb_cmp419'),
-    'port': os.getenv('DB_PORT', '3306')
+    'host':  'butditugyehpocxbfbwe-mysql.services.clever-cloud.com',
+    'database': 'butditugyehpocxbfbwe',
+    'user':  'uuiaxgwdixwubdkj',
+    'password':  'QM8qMH9MsXD3aIeCFdyw',
+    'port': '3306'
 }
-password = os.getenv('DB_PASSWORD', '$xt6#V?X7jcXAqv')
-encoded_password = quote_plus(password)
-
-
 
 # Create SQLAlchemy engine
-DATABASE_URI = f"mysql+pymysql://{DB_CONFIG['user']}:{encoded_password}@{DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['database']}"
+DATABASE_URI = f"mysql+pymysql://{DB_CONFIG['user']}:{DB_CONFIG['password']}@{DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['database']}"
 engine = create_engine(DATABASE_URI)
-
 
 @app.route('/', methods=['GET'])
 def serve_index():
@@ -374,8 +366,9 @@ def get_bubble_data():
 def get_top_producers():
     try:
         # Get query parameters
-        crop_type = request.args.get('crop_type', 'Maize_Production')  # Changed from 'product' to 'crop_type'
-        limit = request.args.get('limit', 10, type=int)
+        crop_type = request.args.get('crop_type', 'Maize_Production')  # Default crop type
+        limit = request.args.get('limit', 10, type=int)  # Default limit
+
         query = text("""
             SELECT region, production AS production_value
             FROM `top_producers`
@@ -383,12 +376,17 @@ def get_top_producers():
             ORDER BY production_value DESC
             LIMIT :limit
         """)
+
         df = pd.read_sql(query, engine, params={'crop_type': crop_type, 'limit': limit})
 
+        if df.empty:
+            return jsonify({"message": "No data found for the specified crop type"}), 404
+
         return jsonify(df.to_dict(orient='records')), 200
+
     except Exception as e:
-        app.logger.error(f"Top producers API error: {str(e)}")
-        return jsonify({"error": f"Failed to fetch top producers: {str(e)}"}), 500
+        app.logger.error(f"Top producers error: {str(e)}")
+        return jsonify({"error": "Failed to fetch top producers"}), 500
 
 
 @app.route('/api/products/list', methods=['GET'])

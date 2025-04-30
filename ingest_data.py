@@ -3,17 +3,16 @@ import pandas as pd
 import json
 from sqlalchemy import create_engine, text
 
-# MySQL configuration
-DB_USER = "freedb_cmp419"
-DB_PASSWORD = "$xt6#V?X7jcXAqv"
-DB_HOST = "sql.freedb.tech"
-DB_PORT = "3306"
-DB_NAME = "freedb_food_production_db"
+# PostgreSQL configuration
+DB_USER = "food_r5q8_user"
+DB_PASSWORD = "ulYWFiHIB0MbPWgXlFKJkHtAGZvX91he"
+DB_HOST = "dpg-d095boadbo4c73964li0-a"
+DB_PORT = "5432"
+DB_NAME = "food_r5q8"
 
-
-# Paths to CSV files (adjust if necessary)
+# Paths to CSV files
 CSV_FILES = {
-    "processed": "processed_data/processed_20250410_1531.csv",
+    "processed": "processed_data/processed_20250420_0003.csv",
     "yearly": "processed_data/yearly_production.csv",
     "decade": "processed_data/decade_production.csv",
     "stats": "processed_data/food_production_statistics.csv",
@@ -22,9 +21,10 @@ CSV_FILES = {
 # Path to JSON file
 JSON_FILE = "processed_data/top_producers.json"
 
-# Create a connection to MySQL (using PyMySQL as driver)
-connection_string = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}"
-engine = create_engine(connection_string, echo=True)
+# Global database connection string
+CONNECTION_STRING = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+engine = create_engine(CONNECTION_STRING, echo=True)
+
 
 
 def create_database():
@@ -35,12 +35,12 @@ def create_database():
 
 
 def load_csv_to_table(table_name, csv_path, if_exists="replace"):
-    # Read the CSV file with pandas
+
     df = pd.read_csv(csv_path)
     for col in df.select_dtypes(include=['float64']).columns:
         df[col] = df[col].round(0)
 
-    db_engine = create_engine(f"{connection_string}/{DB_NAME}", echo=False)
+    db_engine = create_engine(f"{CONNECTION_STRING}/{DB_NAME}", echo=False)
     df.to_sql(table_name, con=db_engine, if_exists=if_exists, index=False)
     print(f"Loaded {csv_path} into table: {table_name}")
 
@@ -62,7 +62,7 @@ def load_json_to_table(table_name, json_path):
 
     df = pd.DataFrame(records)
 
-    db_engine = create_engine(f"{connection_string}/{DB_NAME}", echo=False)
+    db_engine = create_engine(f"{CONNECTION_STRING}/{DB_NAME}", echo=False)
     df.to_sql(table_name, con=db_engine, if_exists='replace', index=False)
     print(f"Loaded {json_path} into table: {table_name}")
 
@@ -75,6 +75,8 @@ if __name__ == "__main__":
     load_csv_to_table("yearly_production", CSV_FILES["yearly"])
     load_csv_to_table("decade_production", CSV_FILES["decade"])
     load_csv_to_table("food_stats", CSV_FILES["stats"])
-
     # Load JSON data into MySQL
     load_json_to_table("top_producers", JSON_FILE)
+
+    # Dispose of engine (close all connections)
+    engine.dispose()

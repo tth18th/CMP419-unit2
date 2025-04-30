@@ -1,0 +1,32 @@
+{
+    "original_rows": 11912,
+    "final_rows": 11912,
+    "duplicates_removed": 0,
+    "columns_preserved": [
+        "Entity",
+        "Year",
+        "Maize_Production",
+        "Rice_Production",
+        "Yams_Production",
+        "Wheat_Production",
+        "Tomatoes_Production",
+        "Tea_Production",
+        "Sweet_potatoes_Production",
+        "Sunflower_seed_Production",
+        "Sugar_cane_Production",
+        "Soybeans_Production",
+        "Rye_Production",
+        "Potatoes_Production",
+        "Oranges_Production",
+        "Peas,_dry_Production",
+        "Palm_oil_Production",
+        "Grapes_Production",
+        "Coffee,_green_Production",
+        "Cocoa_beans_Production",
+        "Meat,_chicken_Production",
+        "Bananas_Production",
+        "Avocados_Production",
+        "Apples_Production",
+        "decade"
+    ]
+}
