@@ -395,9 +395,9 @@ function formatProductName(product) {
 async function initializeFixedCharts() {
     try {
         const [decadeData, yearlyData, statsData] = await Promise.all([
-            fetchData('${BASE_URL}/api/data/decade'),
-            fetchData('${BASE_URL}/api/data/yearly'),
-            fetchData('${BASE_URL}/api/stats')
+            fetchData(`${BASE_URL}/api/data/decade`),
+            fetchData(`${BASE_URL}/api/data/yearly`),
+            fetchData(`${BASE_URL}/api/stats`)
         ]);
         renderDecadeChart(decadeData);
         renderYearlyChart(yearlyData);
