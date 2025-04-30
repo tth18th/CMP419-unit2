@@ -9,10 +9,10 @@ CORS(app)
 
 # Database configuration
 DB_CONFIG = {
-    'host':  'dpg-d095boadbo4c73964li0-a.oregon-postgres.render.com',
+    'host': 'dpg-d095boadbo4c73964li0-a.oregon-postgres.render.com',
     'database': 'food_r5q8',
-    'user':  'food_r5q8_user',
-    'password':  'ulYWFiHIB0MbPWgXlFKJkHtAGZvX91he',
+    'user': 'food_r5q8_user',
+    'password': 'ulYWFiHIB0MbPWgXlFKJkHtAGZvX91he',
     'port': '5432'
 }
 
@@ -20,10 +20,12 @@ DB_CONFIG = {
 DATABASE_URI = f"postgresql://{DB_CONFIG['user']}:{DB_CONFIG['password']}@{DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['database']}"
 engine = create_engine(DATABASE_URI)
 
+
 @app.route('/', methods=['GET'])
 def serve_index():
     # Render the index.html from the templates folder
     return render_template('index.html')
+
 
 def safe_query(query, params=None):
     """Execute a safe database query with error handling."""
@@ -34,6 +36,7 @@ def safe_query(query, params=None):
     except Exception as e:
         app.logger.error(f"Database error: {str(e)}")
         return pd.DataFrame()
+
 
 # ---------------------------
 # Fixed Data Endpoints
@@ -50,6 +53,7 @@ def get_all_data():
     except Exception as e:
         app.logger.error(f"Error fetching all data: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
+
 
 @app.route('/api/data/<country>/<int:year>', methods=['GET'])
 def get_country_year_data(country, year):
@@ -76,6 +80,7 @@ def get_country_year_data(country, year):
         app.logger.error(f"Error fetching country-year data: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
 
+
 @app.route('/api/data/yearly', methods=['GET'])
 def get_yearly_data():
     try:
@@ -99,6 +104,7 @@ def get_yearly_data():
         traceback.print_exc()
         return jsonify({"error": "Failed to fetch yearly data"}), 500
 
+
 def get_valid_product_columns():
     """Get all valid production columns from processed_data table"""
     with engine.connect() as conn:
@@ -106,7 +112,9 @@ def get_valid_product_columns():
         columns = inspector.get_columns('processed_data')
     return [col['name'] for col in columns if col['name'] not in ['Entity', 'Year']]
 
+
 VALID_PRODUCTS = get_valid_product_columns()
+
 
 @app.route('/api/scatter/<product1>/<product2>', methods=['GET'])
 def get_scatter_data(product1, product2):
@@ -117,8 +125,8 @@ def get_scatter_data(product1, product2):
 
         query = text(f"""
             SELECT entity, "{product1}", "{product2}"
-            FROM processed_data
-            WHERE year = (SELECT MAX(year) FROM processed_data)
+            FROM "processed_data"
+            WHERE "Year" = (SELECT MAX("Year") FROM "processed_data")
         """)
         df = pd.read_sql(query, engine)
         return jsonify(df.to_dict(orient='records')), 200
@@ -126,11 +134,12 @@ def get_scatter_data(product1, product2):
         app.logger.error(f"Scatter plot error: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
 
+
 @app.route('/api/stats', methods=['GET'])
 def get_production_stats():
     """Get statistical summary data"""
     try:
-        query = text("SELECT * FROM food_stats")
+        query = text("SELECT * FROM \"food_stats\"")
         df = pd.read_sql(query, engine)
         stat_column = df.columns[0]
         stats_data = {}
@@ -144,6 +153,7 @@ def get_production_stats():
     except Exception as e:
         app.logger.error(f"Stats data error: {str(e)}")
         return jsonify({"error": "Failed to fetch statistics"}), 500
+
 
 @app.route('/api/data/decade', methods=['GET'])
 def get_decade_data_for_product():
@@ -166,6 +176,7 @@ def get_decade_data_for_product():
     except Exception as e:
         app.logger.error(f"Decade data error: {str(e)}")
         return jsonify({"error": "Failed to fetch decade data"}), 500
+
 
 @app.route('/api/data/stats', methods=['GET'])
 def get_stats_for_product():
@@ -205,6 +216,7 @@ def get_stats_for_product():
         app.logger.error(f"Stats error: {str(e)}")
         return jsonify({"error": "Failed to fetch stats"}), 500
 
+
 @app.route('/api/countries', methods=['GET'])
 def get_countries():
     """Get list of all available countries."""
@@ -215,6 +227,7 @@ def get_countries():
     except Exception as e:
         app.logger.error(f"Countries error: {str(e)}")
         return jsonify({"error": "Failed to fetch countries"}), 500
+
 
 @app.route('/api/years', methods=['GET'])
 def get_years():
@@ -227,6 +240,7 @@ def get_years():
         app.logger.error(f"Years error: {str(e)}")
         return jsonify({"error": "Failed to fetch years"}), 500
 
+
 @app.route('/api/products', methods=['GET'])
 def get_products():
     """Get list of all production metrics (columns) from processed_data."""
@@ -238,6 +252,7 @@ def get_products():
     except Exception as e:
         app.logger.error(f"Products error: {str(e)}")
         return jsonify({"error": "Failed to fetch products"}), 500
+
 
 @app.route('/api/trend/<country>/<product>', methods=['GET'])
 def get_production_trend(country, product):
@@ -256,6 +271,7 @@ def get_production_trend(country, product):
         app.logger.error(f"Trend data error: {str(e)}")
         return jsonify({"error": "Failed to fetch trend data"}), 500
 
+
 @app.route('/api/map/<int:year>/<product>', methods=['GET'])
 def get_global_distribution(year, product):
     """Get global production distribution for specific year and product."""
@@ -271,6 +287,7 @@ def get_global_distribution(year, product):
     except Exception as e:
         app.logger.error(f"Map data error: {str(e)}")
         return jsonify({"error": "Failed to fetch map data"}), 500
+
 
 @app.route('/api/stacked/<int:year>', methods=['GET'])
 def get_stacked_data(year):
@@ -289,6 +306,7 @@ def get_stacked_data(year):
     except Exception as e:
         app.logger.error(f"Stacked data error: {str(e)}")
         return jsonify({"error": "Failed to fetch stacked data"}), 500
+
 
 @app.route('/api/data/bubble', methods=['GET'])
 def get_bubble_data():
@@ -323,6 +341,7 @@ def get_bubble_data():
         traceback.print_exc()
         return jsonify({"error": "Failed to fetch bubble data"}), 500
 
+
 @app.route('/api/top_producers', methods=['GET'])
 def get_top_producers():
     try:
@@ -343,6 +362,7 @@ def get_top_producers():
         app.logger.error(f"Top producers error: {str(e)}")
         return jsonify({"error": "Failed to fetch top producers"}), 500
 
+
 @app.route('/api/products/list', methods=['GET'])
 def get_product_list():
     try:
@@ -357,14 +377,15 @@ def get_product_list():
         app.logger.error(f"Product list API error: {str(e)}")
         return jsonify({"error": f"Failed to fetch product list: {str(e)}"}), 500
 
+
 @app.route('/api/country-trends/<country>', methods=['GET'])
 def get_country_trends(country):
     try:
         query = text("""
             SELECT *
-            FROM processed_data
+            FROM "processed_data"
             WHERE "Entity" = :Entity
-            ORDER BY Year ASC
+            ORDER BY "Year" ASC
         """)
         with engine.connect() as conn:
             df = pd.read_sql(query, conn, params={"Entity": country})
@@ -376,6 +397,7 @@ def get_country_trends(country):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 @app.route('/api/data/compare/<country>/<int:year>/<product>', methods=['GET'])
 def compare_with_top_producers(country, year, product):
     try:
@@ -385,9 +407,9 @@ def compare_with_top_producers(country, year, product):
             return jsonify({"error": "Invalid product type"}), 400
 
         query_selected = text(f"""
-            SELECT Entity, Year, "{product}" as production
-            FROM processed_data
-            WHERE Entity = :country AND Year = :year
+            SELECT "Entity", "Year", "{product}" as production
+            FROM "processed_data"
+            WHERE "Entity" = :country AND "Year" = :year
         """)
         selected_df = pd.read_sql(query_selected, engine, params={'country': country, 'year': year})
         if selected_df.empty:
@@ -458,6 +480,7 @@ def compare_with_top_producers(country, year, product):
     except Exception as e:
         app.logger.error(f"Comparison error: {str(e)}", exc_info=True)
         return jsonify({"error": "Internal server error"}), 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
