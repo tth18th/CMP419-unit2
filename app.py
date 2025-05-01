@@ -400,54 +400,59 @@ def get_country_trends(country):
 
 @app.route('/api/data/compare/<country>/<int:year>/<product>', methods=['GET'])
 def compare_with_top_producers(country, year, product):
+    """Compare production data for specific country, year and product with top producers."""
     try:
+        # Validate product parameter
         if product not in VALID_PRODUCTS:
             app.logger.warning(f"Invalid product requested: {product}")
             return jsonify({"error": "Invalid product type"}), 400
 
-        # Fetch selected country/year production
+        # 1. Get selected country's production for the specific product
         query_selected = text(f"""
-            SELECT "Entity", "Year", "{product}" AS production
+            SELECT "Entity", "Year", "{product}" as production
             FROM "processed_data"
             WHERE "Entity" = :country AND "Year" = :year
         """)
-        selected_df = pd.read_sql(query_selected, engine, params={'country': country, 'year': year})
+
+        selected_df = pd.read_sql(query_selected, engine,
+                                  params={"country": country, "year": year})
 
         if selected_df.empty:
+            app.logger.warning(f"No data found for {country} ({year})")
             return jsonify({"error": "No data found for selected country/year"}), 404
 
-        # Convert numpy.int64/float64 to Python float before use
-        selected_production = float(selected_df.iloc[0]['production']) if not pd.isna(
-            selected_df.iloc[0]['production']) else None
-        if selected_production is None:
+        selected_production = selected_df.iloc[0]['production']
+        if pd.isna(selected_production):
             return jsonify({"error": "No production data for this product"}), 404
 
-        # Fetch top producers
+        crop_type = product
+
         query_top = text("""
-            SELECT region, production
+            SELECT "region", "production"
             FROM "top_producers"
-            WHERE crop_type = :crop_type
-            ORDER BY production DESC
+            WHERE "crop_type" = :crop_type
+            ORDER BY "production" DESC
             LIMIT 5
         """)
-        top_df = pd.read_sql(query_top, engine, params={'crop_type': product})
+
+        top_df = pd.read_sql(query_top, engine, params={'crop_type': crop_type})
 
         if top_df.empty:
+            app.logger.warning(f"No top producers found for {crop_type}")
             return jsonify({"error": "No top producers data available"}), 404
 
-        # Convert numpy types to Python float
-        max_production = max(float(top_df['production'].max()), selected_production)
+        max_production = max(top_df['production'].max(), selected_production)
 
-        # Normalize
-        top_df['normalized'] = (top_df['production'].astype(float) / max_production) * 100
+        top_df['normalized'] = (top_df['production'] / max_production) * 100
         selected_normalized = (selected_production / max_production) * 100
 
-        # Build response lists
-        categories = top_df['region'].tolist() + [country]
-        top_values = top_df['normalized'].tolist() + [0]
-        selected_values = [0] * len(top_df) + [selected_normalized]
+        categories = top_df['region'].tolist()
+        categories.append(country)
+        top_values = top_df['normalized'].tolist()
+        top_values.append(0)
+        selected_values = [0] * len(top_df)
+        selected_values.append(selected_normalized)
 
-        # Final response
         response = {
             "product": product,
             "year": year,
@@ -457,13 +462,15 @@ def compare_with_top_producers(country, year, product):
                     "label": "Top Global Producers",
                     "data": top_values,
                     "borderColor": "rgb(75, 192, 192)",
-                    "backgroundColor": "rgba(75, 192, 192, 0.2)"
+                    "backgroundColor": "rgba(75, 192, 192, 0.2)",
+                    "pointBackgroundColor": "rgb(75, 192, 192)",
                 },
                 {
                     "label": f"Selected: {country}",
                     "data": selected_values,
                     "borderColor": "rgb(255, 99, 132)",
-                    "backgroundColor": "rgba(255, 99, 132, 0.2)"
+                    "backgroundColor": "rgba(255, 99, 132, 0.2)",
+                    "pointBackgroundColor": "rgb(255, 99, 132)",
                 }
             ],
             "actual_values": {
@@ -471,12 +478,11 @@ def compare_with_top_producers(country, year, product):
                     "region": country,
                     "production": selected_production
                 },
-                "top_producers": top_df[['region', 'production']].astype(float).to_dict(orient='records'),
+                "top_producers": top_df[['region', 'production']].to_dict('records'),
                 "max_production": max_production
             }
         }
-
-        return jsonify(response)
+        return jsonify(response), 200
 
     except Exception as e:
         app.logger.error(f"Comparison error for {country}/{year}/{product}: {str(e)}", exc_info=True)
