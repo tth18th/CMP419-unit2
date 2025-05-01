@@ -21,9 +21,6 @@ const domElements = {
     }
 };
 
-// Base URL for API requests
-const BASE_URL = 'https://cmp419-unit2.onrender.com';
-
 // Initialization
 async function initializeDashboard() {
     try {
@@ -49,9 +46,9 @@ async function fetchData(url) {
 async function populateDropdowns() {
     try {
         const [countries, years, products] = await Promise.all([
-            fetchData(`${BASE_URL}/api/countries`),
-            fetchData(`${BASE_URL}/api/years`),
-            fetchData(`${BASE_URL}/api/products`)
+            fetchData(`http://localhost:5000/api/countries`),
+            fetchData(`http://localhost:5000/api/years`),
+            fetchData(`http://localhost:5000/api/products`)
         ]);
 
         populateSelect(domElements.entitySelect, countries, 'Select Country');
@@ -135,7 +132,7 @@ async function updateBarChart() {
     return;
   }
 
-  fetch(`${BASE_URL}/api/trend/${entity}/${product}`)
+  fetch(`http://localhost:5000/api/trend/${entity}/${product}`)
     .then(res => res.json())
     .then(data => {
       const trace = {
@@ -160,7 +157,7 @@ async function updateBarChart() {
 async function updateTrendChart() {
     if (!currentFilters.country || !currentFilters.product) return;
     try {
-        const data = await fetchData(`${BASE_URL}/api/trend/${currentFilters.country}/${currentFilters.product}`);
+        const data = await fetchData(`http://localhost:5000/api/trend/${currentFilters.country}/${currentFilters.product}`);
 
         // Prepare data for the treemap
         const labels = data.map(d => d.Year);
@@ -196,7 +193,7 @@ async function updateMapChart() {
 
     try {
         const data = await fetchData(
-            `${BASE_URL}/api/map/${currentFilters.year}/${currentFilters.product}`
+            `http://localhost:5000/api/map/${currentFilters.year}/${currentFilters.product}`
         );
         // Get selected country index for highlighting
         const selectedCountryIndex = data.findIndex(d => d.Entity === currentFilters.country);
@@ -350,7 +347,7 @@ async function updateMapChart() {
 // Function to update the stacked chart
 async function updateStackedChart(year) {
     try {
-            const response = await fetch(`${BASE_URL}/api/stacked/${year}`);
+            const response = await fetch(`http://localhost:5000/api/stacked/${year}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -395,9 +392,9 @@ function formatProductName(product) {
 async function initializeFixedCharts() {
     try {
         const [decadeData, yearlyData, statsData] = await Promise.all([
-            fetchData(`${BASE_URL}/api/data/decade`),
-            fetchData(`${BASE_URL}/api/data/yearly`),
-            fetchData(`${BASE_URL}/api/stats`)
+            fetchData('http://localhost:5000/api/data/decade'),
+            fetchData('http://localhost:5000/api/data/yearly'),
+            fetchData('http://localhost:5000/api/stats')
         ]);
         renderDecadeChart(decadeData);
         renderYearlyChart(yearlyData);
@@ -471,7 +468,7 @@ function updateDecadeChart() {
     }
 
     // Construct the fetch URL with the product parameter
-    fetch(`${BASE_URL}/api/data/decade?product=${product}`)
+    fetch(`http://localhost:5000/api/data/decade?product=${product}`)
         .then(res => {
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`);
@@ -507,7 +504,7 @@ function updateYearlyChart() {
         return;
     }
 
-    fetch(`${BASE_URL}/api/data/yearly`)
+    fetch(`http://localhost:5000/api/data/yearly`)
         .then(res => {
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`);
@@ -553,7 +550,7 @@ async function updateScatterChart() {
     }
 
     try {
-        const data = await fetchData(`${BASE_URL}/api/country-trends/${currentFilters.country}`);
+        const data = await fetchData(`http://localhost:5000/api/country-trends/${currentFilters.country}`);
 
         const years = data.map(d => d.Year);
 
@@ -613,7 +610,7 @@ function updateStatsChart() {
         return;
     }
 
-    fetch(`${BASE_URL}/api/data/stats?product=${encodeURIComponent(product)}`)
+    fetch(`http://localhost:5000/api/data/stats?product=${encodeURIComponent(product)}`)
         .then(res => {
             if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
             return res.json();
@@ -663,7 +660,7 @@ function updateStatsChart() {
 
 async function loadBubbleChart() {
     try {
-        const data = await fetchData(`${BASE_URL}/api/data/bubble`);
+        const data = await fetchData(`http://localhost:5000/api/data/bubble`);
 
         // Create size values for the bubbles
         const maxProduction = Math.max(...data.map(d => d.total_production));
@@ -730,7 +727,7 @@ async function loadBubbleChart() {
 async function loadTopProducers() {
     try {
         const cropType = document.getElementById('productSelect').value || 'Maize_Production';
-        const response = await fetch(`${BASE_URL}/api/top_producers?crop_type=${encodeURIComponent(cropType)}`);
+        const response = await fetch(`http://localhost:5000/api/top_producers?crop_type=${encodeURIComponent(cropType)}`);
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -786,7 +783,7 @@ async function loadComparison(country, year, product) {
         if (typeof Chart === 'undefined') {
             throw new Error('Chart.js library is not loaded');
         }
-        const response = await fetch(`${BASE_URL}/api/data/compare/${country}/${year}/${product}`);
+        const response = await fetch(`http://localhost:5000/api/data/compare/${country}/${year}/${product}`);
         if (!response.ok) {
             const errorText = await response.text();
             throw new Error(`API request failed: ${response.status} - ${errorText}`);
