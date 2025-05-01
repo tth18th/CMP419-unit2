@@ -410,12 +410,12 @@ def compare_with_top_producers(country, year, product):
         # 1. Get selected country's production for the specific product
         query_selected = text(f"""
             SELECT "Entity", "Year", "{product}" as production
-            FROM "processed_data"
+            FROM processed_data
             WHERE "Entity" = :country AND "Year" = :year
         """)
 
         selected_df = pd.read_sql(query_selected, engine,
-                                  params={"country": country, "year": year})
+                                  params={'country': country, 'year': year})
 
         if selected_df.empty:
             app.logger.warning(f"No data found for {country} ({year})")
@@ -428,10 +428,10 @@ def compare_with_top_producers(country, year, product):
         crop_type = product
 
         query_top = text("""
-            SELECT "region", "production"
-            FROM "top_producers"
-            WHERE "crop_type" = :crop_type
-            ORDER BY "production" DESC
+            SELECT region, production
+            FROM top_producers
+            WHERE crop_type = :crop_type
+            ORDER BY production DESC
             LIMIT 5
         """)
 
@@ -487,6 +487,8 @@ def compare_with_top_producers(country, year, product):
     except Exception as e:
         app.logger.error(f"Comparison error for {country}/{year}/{product}: {str(e)}", exc_info=True)
         return jsonify({"error": "Internal server error"}), 500
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
