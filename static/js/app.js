@@ -777,12 +777,15 @@ async function loadTopProducers() {
 
 async function loadComparison(country, year, product) {
     try {
-        console.log('Loading comparison:', { country, year, product });
+        console.log('Loading comparison for:', country, year, product);
+
         if (!country || !year || !product) {
             console.warn('Missing parameters for comparison');
             return;
         }
-
+        if (typeof Chart === 'undefined') {
+            throw new Error('Chart.js library is not loaded');
+        }
         const response = await fetch(`${BASE_URL}/api/data/compare/${country}/${year}/${product}`);
         if (!response.ok) {
             const errorText = await response.text();
@@ -790,8 +793,7 @@ async function loadComparison(country, year, product) {
         }
 
         const data = await response.json();
-
-        console.log('Received comparison data:', data); // 🔍 Log full response
+        console.log('Comparison data:', data);
 
         if (data.error) {
             throw new Error(data.error);
@@ -801,39 +803,116 @@ async function loadComparison(country, year, product) {
         if (!ctx) {
             throw new Error('Radar chart canvas element not found');
         }
-
         if (window.comparisonChart) {
             window.comparisonChart.destroy();
         }
-
         window.comparisonChart = new Chart(ctx, {
             type: 'radar',
-            data: data,
+            data: {
+                labels: data.labels,
+                datasets: data.datasets.map((dataset, i) => ({
+                    ...dataset,
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: dataset.borderColor,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    fill: true,
+                    backgroundColor: i === 0
+                        ? 'rgba(75, 192, 192, 0.15)'
+                        : 'rgba(255, 99, 132, 0.15)',
+                    tension: 0.2
+                }))
+            },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutQuart'
+                },
+                layout: {
+                    padding: {
+                        top: 10,
+                        right: 10,
+                        bottom: 10,
+                        left: 10
+                    }
+                },
                 plugins: {
                     title: {
-                        display: false
+                        display: false,
+                        text: `${formatProductName(product)} Production Comparison (${year})`,
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
                     },
                     legend: {
+                        position: 'top',
                         labels: {
+                            boxWidth: 12,
+                            padding: 20,
+                            font: {
+                                size: 12
+                            },
                             usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 12
+                        },
+                        padding: 10,
+                        cornerRadius: 6,
+                        displayColors: true,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.dataset.label;
+                                const value = (context.raw / 100) * data.actual_values.max_production;
+                                return `${label}: ${value.toLocaleString()} tons`;
+                            }
                         }
                     }
                 },
                 scales: {
                     r: {
                         angleLines: {
+                            display: true,
                             color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        grid: {
+                            circular: true,
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 11,
+                                family: 'Arial'
+                            },
+                            color: '#555'
                         },
                         ticks: {
                             backdropColor: 'rgba(255, 255, 255, 0.8)',
-                            callback: value => `${value}%`,
+                            z: 1,
+                            callback: function(value) {
+                                return `${value}%`;
+                            },
                             stepSize: 20
                         },
                         suggestedMin: 0,
                         suggestedMax: 100
+                    }
+                },
+                elements: {
+                    line: {
+                        borderWidth: 2.5
                     }
                 }
             }
@@ -850,6 +929,41 @@ async function loadComparison(country, year, product) {
     }
 }
 
+function displayActualValues(values) {
+    const container = document.getElementById('values-container');
+    let html = `
+        <h3>Actual Production Values</h3>
+        <p>Maximum production: ${values.max_production.toLocaleString()} tons</p>
+        <table>
+            <tr>
+                <th>Region</th>
+                <th>Production (tons)</th>
+                <th>% of Max</th>
+            </tr>
+    `;
+    // Add top producers
+    values.top_producers.forEach(producer => {
+        const percent = (producer.production / values.max_production) * 100;
+        html += `
+            <tr>
+                <td>${producer.region}</td>
+                <td>${producer.production.toLocaleString()}</td>
+                <td>${percent.toFixed(1)}%</td>
+            </tr>
+        `;
+    });
+    // Add selected country
+    const selectedPercent = (values.selected_country.production / values.max_production) * 100;
+    html += `
+        <tr class="highlight">
+            <td>${values.selected_country.region}</td>
+            <td>${values.selected_country.production.toLocaleString()}</td>
+            <td>${selectedPercent.toFixed(1)}%</td>
+        </tr>
+    </table>`;
+
+    container.innerHTML = html;
+}
 
 // Start the application when the DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeDashboard);
