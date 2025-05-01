@@ -3,6 +3,7 @@ import pandas as pd
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 from sqlalchemy import create_engine, text, inspect
+from psycopg2.errors import UndefinedColumn
 
 app = Flask(__name__)
 CORS(app)
@@ -398,24 +399,29 @@ def get_country_trends(country):
         return jsonify({'error': str(e)}), 500
 
 
+
+
 @app.route('/api/data/compare/<country>/<int:year>/<product>', methods=['GET'])
 def compare_with_top_producers(country, year, product):
     """Compare production data for specific country, year and product with top producers."""
     try:
-        # Validate product parameter
+        # Validate product against known good list
         if product not in VALID_PRODUCTS:
             app.logger.warning(f"Invalid product requested: {product}")
             return jsonify({"error": "Invalid product type"}), 400
 
-        # 1. Get selected country's production for the specific product
-        query_selected = text(f"""
-            SELECT "Entity", "Year", "{product}" as production
-            FROM processed_data
-            WHERE "Entity" = :country AND "Year" = :year
-        """)
+        # Attempt to query the selected product column
+        try:
+            query_selected = text(f"""
+                SELECT "Entity", "Year", "{product}" as production
+                FROM processed_data
+                WHERE "Entity" = :country AND "Year" = :year
+            """)
+            selected_df = pd.read_sql(query_selected, engine, params={'country': country, 'year': year})
 
-        selected_df = pd.read_sql(query_selected, engine,
-                                  params={'country': country, 'year': year})
+        except UndefinedColumn:
+            app.logger.warning(f"Requested column '{product}' does not exist in 'processed_data' table")
+            return jsonify({"error": f"Product column '{product}' not found in dataset"}), 400
 
         if selected_df.empty:
             app.logger.warning(f"No data found for {country} ({year})")
@@ -428,13 +434,12 @@ def compare_with_top_producers(country, year, product):
         crop_type = product
 
         query_top = text("""
-            SELECT region, production
-            FROM top_producers
+            SELECT "region", "production"
+            FROM "top_producers"
             WHERE crop_type = :crop_type
             ORDER BY production DESC
             LIMIT 5
         """)
-
         top_df = pd.read_sql(query_top, engine, params={'crop_type': crop_type})
 
         if top_df.empty:
