@@ -397,98 +397,81 @@ def get_country_trends(country):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 @app.route('/api/data/compare/<country>/<int:year>/<product>', methods=['GET'])
 def compare_with_top_producers(country, year, product):
-    """Compare production data for specific country, year and product with top producers."""
+    """Compare production data with top producers"""
     try:
-        app.logger.info(f"Comparing: {country}, {year}, {product}")
+        app.logger.info(f"Starting comparison for {country}/{year}/{product}")
 
-        # Validate product parameter
+        # Validate product exists
         if product not in VALID_PRODUCTS:
-            app.logger.warning(f"Invalid product requested: {product}")
-            return jsonify({"error": "Invalid product type"}), 400
+            app.logger.warning(f"Invalid product: {product}")
+            return jsonify({"error": "Invalid product"}), 400
 
-        # 1. Get selected country/year's production
-        query_selected = text(f"""
-            SELECT "Entity", "Year", "{product}" AS production
-            FROM "processed_data"
-            WHERE "Entity" = :country AND "Year" = :year
-        """)
-        app.logger.debug(f"Running query: {query_selected}")
-        selected_df = pd.read_sql(query_selected, engine, params={'country': country, 'year': year})
+        # Get selected country data
+        with engine.connect() as conn:
+            # Get selected production
+            selected_df = pd.read_sql(
+                text(f"""
+                    SELECT {product} AS production
+                    FROM processed_data
+                    WHERE entity = :country AND year = :year
+                """),
+                conn,
+                params={'country': country, 'year': year}
+            ).fillna(0)
 
-        if selected_df.empty:
-            app.logger.warning(f"No data found for {country} ({year})")
-            return jsonify({"error": "No data found for selected country/year"}), 404
+            if selected_df.empty:
+                return jsonify({"error": "No data found"}), 404
 
-        selected_production = selected_df.iloc[0]['production']
-        if pd.isna(selected_production):
-            app.logger.warning(f"Production value is NULL for {country} ({year}, {product})")
-            return jsonify({"error": "No production data for this product"}), 404
+            selected_production = selected_df.iloc[0]['production']
 
-        crop_type = product
+            # Get top producers
+            top_df = pd.read_sql(
+                text("""
+                    SELECT region, production
+                    FROM top_producers
+                    WHERE crop_type = :product
+                    ORDER BY production DESC
+                    LIMIT 5
+                """),
+                conn,
+                params={'product': product}
+            ).fillna(0)
 
-        # 2. Get top producers for the same product
-        query_top = text("""
-            SELECT region, production
-            FROM "top_producers"
-            WHERE crop_type = :crop_type
-            ORDER BY production DESC
-            LIMIT 5
-        """)
-        top_df = pd.read_sql(query_top, engine, params={'crop_type': crop_type})
-
-        if top_df.empty:
-            app.logger.warning(f"No top producers found for {crop_type}")
-            return jsonify({"error": "No top producers data available"}), 404
-
+        # Prepare response
         max_production = max(top_df['production'].max(), selected_production)
-
-        # Normalize values
         top_df['normalized'] = (top_df['production'] / max_production) * 100
         selected_normalized = (selected_production / max_production) * 100
 
-        # Build response
-        categories = top_df['region'].tolist() + [country]
-        top_values = top_df['normalized'].tolist() + [0]
-        selected_values = [0] * len(top_df) + [selected_normalized]
-
-        response = {
+        return jsonify({
             "product": product,
             "year": year,
-            "labels": categories,
+            "labels": [*top_df.region.tolist(), country],
             "datasets": [
                 {
-                    "label": "Top Global Producers",
-                    "data": top_values,
-                    "borderColor": "rgb(75, 192, 192)",
-                    "backgroundColor": "rgba(75, 192, 192, 0.2)",
-                    "pointBackgroundColor": "rgb(75, 192, 192)"
+                    "label": "Top Producers",
+                    "data": [*top_df.normalized.tolist(), 0],
+                    "borderColor": "#4e79a7",
+                    "backgroundColor": "rgba(78, 121, 167, 0.2)",
                 },
                 {
                     "label": f"Selected: {country}",
-                    "data": selected_values,
-                    "borderColor": "rgb(255, 99, 132)",
-                    "backgroundColor": "rgba(255, 99, 132, 0.2)",
-                    "pointBackgroundColor": "rgb(255, 99, 132)"
+                    "data": [*[0] * len(top_df), selected_normalized],
+                    "borderColor": "#e15759",
+                    "backgroundColor": "rgba(225, 87, 89, 0.2)",
                 }
             ],
-            "actual_values": {
-                "selected_country": {
-                    "region": country,
-                    "production": selected_production
-                },
-                "top_producers": top_df[['region', 'production']].to_dict(orient='records'),
-                "max_production": max_production
+            "metrics": {
+                "selected": float(selected_production),
+                "max": float(max_production),
+                "top_producers": top_df.astype(float).to_dict('records')
             }
-        }
-
-        return jsonify(response), 200
+        })
 
     except Exception as e:
-        app.logger.error(f"Comparison error: {str(e)}", exc_info=True)
-        return jsonify({'error': str(e)}), 500
-
-
+        app.logger.error(f"Comparison failed: {traceback.format_exc()}")
+        return jsonify({"error": "Internal error"}), 500
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
